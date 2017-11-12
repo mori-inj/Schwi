@@ -229,36 +229,11 @@ class Geo:
             self.B = B
             self.C = C
 
-            size = len(Geo.conds)
-            nAB = Geo.nEq(A,B)
-            if len(Geo.conds) > size:
-                Geo.conds.remove(nAB)
-            nBC = Geo.nEq(B,C)
-            if len(Geo.conds) > size:
-                Geo.conds.remove(nBC)
-            nAC = Geo.nEq(A,C)
-            if len(Geo.conds) > size:
-                Geo.conds.remove(nAC)
-            nABC = Geo.nBetS(A,B,C)
-            if len(Geo.conds) > size:
-                Geo.conds.remove(nABC)
-            nACB = Geo.nBetS(A,C,B)
-            if len(Geo.conds) > size:
-                Geo.conds.remove(nACB)
-            nBAC = Geo.nBetS(B,A,C)
-            if len(Geo.conds) > size:
-                Geo.conds.remove(nBAC)
-            
-            assert nAB in Geo.conds and nBC in Geo.conds and nAC in Geo.conds \
-                    and nABC in Geo.conds and nACB in Geo.conds and nBAC in Geo.conds, 'insufficient conditions'
             Geo.conds.add(self)
         def __hash__(self):
             return hash(self.__class__) ^ (hash(self.A)<<1) ^ (hash(self.B)<<2) ^ (hash(self.C)<<3)
         def __eq__(self, other):
             return self.__hash__() == other.__hash__()
-        def __str__(self):
-            return 'Triangle '+ self.A + self.B + self.C
-
     
     
     """====Axioms===="""
@@ -1049,6 +1024,40 @@ class Geo:
             return self.__hash__() == other.__hash__()
         def __str__(self):
             return A+B+' == '+B+C +' /\ '+B+C+' == '+C+A
+
+    def triangle(self, A, B, C):
+        assert A in Geo.names, 'point not defined'
+        assert B in Geo.names, 'point not defined'
+        assert C in Geo.names, 'point not defined'
+        assert Geo.names[A].__class__.__name__ is 'Point', 'given type is not point'
+        assert Geo.names[B].__class__.__name__ is 'Point', 'given type is not point'
+        assert Geo.names[C].__class__.__name__ is 'Point', 'given type is not point'
+
+        size = len(Geo.conds)
+        nAB = Geo.nEq(A,B)
+        if len(Geo.conds) > size:
+            Geo.conds.remove(nAB)
+        nBC = Geo.nEq(B,C)
+        if len(Geo.conds) > size:
+            Geo.conds.remove(nBC)
+        nAC = Geo.nEq(A,C)
+        if len(Geo.conds) > size:
+            Geo.conds.remove(nAC)
+        nABC = Geo.nBetS(A,B,C)
+        if len(Geo.conds) > size:
+            Geo.conds.remove(nABC)
+        nACB = Geo.nBetS(A,C,B)
+        if len(Geo.conds) > size:
+            Geo.conds.remove(nACB)
+        nBAC = Geo.nBetS(B,A,C)
+        if len(Geo.conds) > size:
+            Geo.conds.remove(nBAC)
+        
+        assert nAB in Geo.conds and nBC in Geo.conds and nAC in Geo.conds \
+                and nABC in Geo.conds and nACB in Geo.conds and nBAC in Geo.conds, 'insufficient conditions'
+
+        Geo.conds.add(Geo.Triangle(A,B,C))
+
 
 
 
