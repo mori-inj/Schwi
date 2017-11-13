@@ -7,10 +7,15 @@ class Geo:
     names = {}
     conds = Set([])
     conclusion = []
-    
+
     def __init__(self):
         pass
-    
+
+    def clear(self):
+        Geo.names = {}
+        Geo.conds = Set([])
+        Geo.conclusion = []
+            
     class Point:
         def __init__(self, s):
             assert type(s) is StringType, 'name should be string'
@@ -134,7 +139,7 @@ class Geo:
             self.B = B
             Geo.conds.add(self)
         def __hash__(self):
-            return hash(self.__class__) ^ (hash(self.A)<<1) ^ (hash(self.B)<<1)
+            return hash(self.__class__) ^ (hash(self.A)<<1) * (hash(self.B)<<1)
         def __eq__(self, other):
             return self.__hash__() == other.__hash__()
         def __str__(self):
@@ -148,7 +153,7 @@ class Geo:
             self.B = B
             Geo.conds.add(self)
         def __hash__(self):
-            return hash(self.__class__) ^ (hash(self.A)<<1) ^ (hash(self.B)<<1)
+            return hash(self.__class__) ^ (hash(self.A)<<1) * (hash(self.B)<<1)
         def __eq__(self, other):
             return self.__hash__() == other.__hash__()
         def __str__(self):
@@ -167,6 +172,8 @@ class Geo:
             return hash(self.__class__) ^ (hash(self.A)<<1) ^ (hash(self.B)<<2) ^ (hash(self.C)<<3)
         def __eq__(self, other):
             return self.__hash__() == other.__hash__()
+        def __str__(self):
+            return 'TE ' + self.A + " " + self.B + " " + self.C
 
     class nCol:
         def __init__(self, A, B, C): # p0,p1,p2 := (p0!=p1 & p0!=p2 & p1!=p2 & !(p0*p1*p2) & !(p0*p2*p1) & !(p1*p0*p2))
@@ -181,6 +188,9 @@ class Geo:
             return hash(self.__class__) ^ (hash(self.A)<<1) ^ (hash(self.B)<<2) ^ (hash(self.C)<<3)
         def __eq__(self, other):
             return self.__hash__() == other.__hash__()
+        def __str__(self):
+            return 'nCol ' + self.A + " " + self.B + " " + self.C
+
 
     class Col:
         def __init__(self, A, B, C): # p0,p1,p2 := !nCol p0,p1,p2
@@ -195,6 +205,9 @@ class Geo:
             return hash(self.__class__) ^ (hash(self.A)<<1) ^ (hash(self.B)<<2) ^ (hash(self.C)<<3)
         def __eq__(self, other):
             return self.__hash__() == other.__hash__()
+        def __str__(self):
+            return 'Col ' + self.A + " " + self.B + " " + self.C
+
 
     class Cong3:
         def __init__(self, A, B, C, a, b, c):
@@ -303,7 +316,6 @@ class Geo:
         assert B in Geo.names, 'point not defined'
         assert Geo.names[A].__class__.__name__ is 'Point', 'given type is not point'
         assert Geo.names[B].__class__.__name__ is 'Point', 'given type is not point'
-        
         Geo.conds.add(Geo.Cong(A,B, B,A))
 
     # def stab(self, A, B):
@@ -635,7 +647,7 @@ class Geo:
         size = len(Geo.conds)
         nAB = Geo.nEq(A,B)
         if len(Geo.conds) > size:
-            Geon.conds.remove(nAB)
+            Geo.conds.remove(nAB)
         AB_CD = Geo.Cong(A,B, C,D)
         if len(Geo.conds) > size:
             Geo.conds.remove(AB_CD)
